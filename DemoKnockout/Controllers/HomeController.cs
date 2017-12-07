@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using DemoKnockout.Models;
 using System.Web.Mvc;
 
 namespace DemoKnockout.Controllers
@@ -26,5 +26,17 @@ namespace DemoKnockout.Controllers
 
             return View();
         }
+
+        public ActionResult Basic()
+        {
+            var person = new Person
+            {
+                FirstName = "Pedro",
+                LastName = "Tavares!"
+            };
+            return View(person);
+        }
     }
+
+    
 }
