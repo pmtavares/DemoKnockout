@@ -71,12 +71,19 @@ namespace DemoKnockout.Extenssions
 
         private static string BuildPreviousLink(UrlHelper urlHelper, QueryOptions queryOptions, string actionName)
         {
+            var previousPage = 1;
+            if (queryOptions.CurrentPage > 1)
+            {
+                previousPage = queryOptions.CurrentPage - 1;
+            }
+            
+
             return string.Format("<a href=\"{0}\"><span aria-hidden=\"true\">&larr;</span> Previous</a>",
                 urlHelper.Action(actionName, new
                     {
                         SortOrder = queryOptions.SortOrder,
                         SortField = queryOptions.SortField,
-                        CurrentPage = queryOptions.CurrentPage - 1,
+                        CurrentPage = previousPage,// queryOptions.CurrentPage - 1,
                         PageSize = queryOptions.PageSize
 
                     })

@@ -1,10 +1,13 @@
-﻿function AuthorFormViewModel() {
+﻿function AuthorFormViewModel(author) {
     var self = this;
-
+    debugger
     self.saveCompleted = ko.observable(false);
     self.sending = ko.observable(false);
-    
+
+    self.isCreating = author.id == 0;
+
     self.author = {
+        id : author.id,
         firstName: ko.observable(),
         lastName: ko.observable(),
         biography: ko.observable(),
@@ -14,13 +17,12 @@
         if (!$(form).valid()) {
             return false;
         }
-
         self.sending(true);
         // include the anti forgery token
         self.author.__RequestVerificationToken = form[0].value;
         
         $.ajax({
-            url: 'Create',
+            url: (self.isCreating) ? 'Create':'Edit',
             type: 'post',
             contentType: 'application/x-www-form-urlencoded',
             data: ko.toJS(self.author)
@@ -38,6 +40,6 @@
     };
 
     self.errorSave = function () {
-        $('.body-content').prepend('<div class="alert alert-danger"><strong> Error!</strong > There was an error creating the author.</div > ');
+        $('.body-content').prepend('<div class="alert alert-danger"><strong> Error!</strong > There was an error saving the author.</div > ');
     };
 }
