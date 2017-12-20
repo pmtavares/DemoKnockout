@@ -1,16 +1,20 @@
 ﻿function AuthorFormViewModel(author) {
     var self = this;
-    debugger
+    
     self.saveCompleted = ko.observable(false);
     self.sending = ko.observable(false);
-
-    self.isCreating = author.id == 0;
-
+    if (author.id === 0) {
+        self.isCreating = true;
+    }
+    else {
+        self.isCreating = false;
+    }
+    
     self.author = {
         id : author.id,
-        firstName: ko.observable(),
-        lastName: ko.observable(),
-        biography: ko.observable(),
+        firstName: ko.observable(author.firstName),
+        lastName: ko.observable(author.lastName),
+        biography: ko.observable(author.biography),
     };
     
     self.validateAndSave = function (form) {
@@ -36,7 +40,15 @@
     self.successfulSave = function () {
         self.saveCompleted(true);
         $('.body-content').prepend('<div class="alert alert-success"><strong> Success!</strong > The new author has been saved.</div > ');
-        setTimeout(function () { location.href = './'; }, 1000);
+        setTimeout(function () {
+            if (self.isCreating) {
+                location.href = './';
+            }
+            else {
+                location.href = '../';
+            }
+        }, 1000);
+    
     };
 
     self.errorSave = function () {
