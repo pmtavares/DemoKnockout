@@ -11,6 +11,8 @@ using DemoKnockout.DAL;
 using DemoKnockout.Models;
 using DemoKnockout.Extenssions;
 using System.Web.ModelBinding;
+using DemoKnockout.ViewModels;
+using AutoMapper;
 
 namespace DemoKnockout.Controllers
 {
@@ -27,8 +29,19 @@ namespace DemoKnockout.Controllers
             queryOptions.TotalPages = (int)Math.Ceiling((double)db.Authors.Count() / queryOptions.PageSize);
 
             ViewBag.QueryOptions = queryOptions;
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<Author, AuthorViewModel>();
+            });
 
-            return View(authors.ToList());
+            //IMapper mapper = config.CreateMapper();
+            //var author = new Author();
+            //mapper.Map<Author, AuthorViewModel>(author);
+
+            var author = new Author();
+
+            Mapper.Map<Author, AuthorViewModel>(author);
+
+            return View(Mapper.Map<List<Author>, List<AuthorViewModel>>(authors.ToList()));
         }
 
         // GET: Authors/Details/5

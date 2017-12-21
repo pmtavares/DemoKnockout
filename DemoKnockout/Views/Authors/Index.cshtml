@@ -1,5 +1,5 @@
-﻿@using DemoKnockout.Models
-@model IEnumerable<Author>
+﻿@using DemoKnockout.ViewModels
+@model IEnumerable<AuthorViewModel>
 @using DemoKnockout.Extenssions
 @{
     ViewBag.Title = "Authors";
@@ -7,54 +7,55 @@
     var queryOptions = (QueryOptions)ViewBag.QueryOptions;
 }
 
-<h2>Index</h2>
+<h2>Author Index</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            @*<th>@Html.DisplayNameFor(model => model.FirstName) </th>
-            <th>@Html.DisplayNameFor(model => model.LastName)</th>*@
-            
-            <th> @Html.BuildSortableLink("First Name", "Index", "firstName", queryOptions)</th>
-            <th> @Html.BuildSortableLink("Last Name", "Index", "lastName", queryOptions)</th>
-            <th>Actions </th>
-        </tr>
-       
-    </thead>
-    <tbody data-bind="foreach: authors">
-        <tr>
-            <td data-bind="text: firstName"></td>
-            <td data-bind="text: lastName"></td>
-            <td>
-                <a data-bind="attr:{href: '@Url.Action("Details")/' +  id}" class="btn btn-info">Details</a>
-                <a data-bind="attr:{href: '@Url.Action("Edit")/'+ id}" class="btn btn-primary">Edit</a>
-                <a data-bind="attr:{href: '@Url.Action("Delete")/' + id}" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
-    </tbody>
+<div style="display: none" data-bind="visible: authors.length > 0">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                @*<th>@Html.DisplayNameFor(model => model.FirstName) </th>
+                    <th>@Html.DisplayNameFor(model => model.LastName)</th>*@
 
-</table>
+                <th> @Html.BuildSortableLink("First Name", "Index", "firstName", queryOptions)</th>
+                <th> @Html.BuildSortableLink("Last Name", "Index", "lastName", queryOptions)</th>
+                <th>Actions </th>
+            </tr>
+
+        </thead>
+        <tbody data-bind="foreach: authors">
+            <tr>
+                <td data-bind="text: firstName"></td>
+                <td data-bind="text: lastName"></td>
+                <td>
+                    <a data-bind="attr:{href: '@Url.Action("Details")/' +  id}" class="btn btn-info">Details</a>
+                    <a data-bind="attr:{href: '@Url.Action("Edit")/'+ id}" class="btn btn-primary">Edit</a>
+                    <a data-bind="click: $parent.showDeleteModal, attr: {href: '@Url.Action("Delete")/' + id}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
 
 
     @Html.BuildNextPreviousLinks(queryOptions, "Index")
+ </div>
+<div style="display: none" data-bind="visible: authors.length ==0" class="alert alert-warning alert-dismissible" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+    There are no authors to display. Click @Html.ActionLink("here", "Create") to create one now.
+</div>
 
-
-
-    @section Scripts
-{
+    @section Scripts {
+        @Scripts.Render("~/bundles/myknockout")
         <script>
-        function ViewModel(authors) {
-            var self = this;
-            self.authors = authors;
-        };
-
-        var viewModel = new ViewModel(@Html.HtmlConvertToJson(Model));
+        var viewModel = new AuthorIndexViewModel(@Html.HtmlConvertToJson(Model));
         ko.applyBindings(viewModel);
-
-
-        
         </script>
     }
+
+

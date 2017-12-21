@@ -21,7 +21,8 @@ namespace DemoKnockout
 
 
             bundles.Add(new ScriptBundle("~/bundles/myknockout").Include(
-                        "~/Scripts/ViewModels/AuthorFormViewModel.js"));
+                        "~/Scripts/ViewModels/AuthorFormViewModel.js",
+                        "~/Scripts/ViewModels/AuthorIndexViewModel.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js",
