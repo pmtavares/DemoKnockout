@@ -28,20 +28,16 @@ namespace DemoKnockout.Controllers
             var authors = db.Authors.OrderBy(queryOptions.Sort).Skip(start).Take(queryOptions.PageSize);
             queryOptions.TotalPages = (int)Math.Ceiling((double)db.Authors.Count() / queryOptions.PageSize);
 
-            ViewBag.QueryOptions = queryOptions;
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<Author, AuthorViewModel>();
+            //ViewBag.QueryOptions = queryOptions;
+            
+            Mapper.CreateMap<Author, AuthorViewModel>();
+
+            return View(new ResultList<AuthorViewModel>
+            {
+                QueryOptions = queryOptions, Results = Mapper.Map<List<Author>, List<AuthorViewModel>>(authors.ToList())
             });
 
-            //IMapper mapper = config.CreateMapper();
-            //var author = new Author();
-            //mapper.Map<Author, AuthorViewModel>(author);
-
-            var author = new Author();
-
-            Mapper.Map<Author, AuthorViewModel>(author);
-
-            return View(Mapper.Map<List<Author>, List<AuthorViewModel>>(authors.ToList()));
+            //return View(Mapper.Map<List<Author>, List<AuthorViewModel>>(authors.ToList()));
         }
 
         // GET: Authors/Details/5
@@ -62,7 +58,7 @@ namespace DemoKnockout.Controllers
         // GET: Authors/Create
         public ActionResult Create()
         {
-            return View("Form", new Author());
+            return View("Form", new AuthorViewModel()); 
         }
 
         // POST: Authors/Create
@@ -70,11 +66,12 @@ namespace DemoKnockout.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,Biography")] Author author)
+        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,Biography")] AuthorViewModel author)
         {
             if (ModelState.IsValid)
             {
-                db.Authors.Add(author);
+                Mapper.CreateMap<AuthorViewModel, Author>();
+                db.Authors.Add(Mapper.Map<AuthorViewModel, Author>(author));
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -94,7 +91,8 @@ namespace DemoKnockout.Controllers
             {
                 return HttpNotFound();
             }
-            return View("Form",author);
+            Mapper.CreateMap<Author, AuthorViewModel>();
+            return View("Form",Mapper.Map<Author, AuthorViewModel>(author));
         }
 
         // POST: Authors/Edit/5
@@ -102,15 +100,16 @@ namespace DemoKnockout.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Author author)
+        public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,Biography")]AuthorViewModel author)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(author).State = EntityState.Modified;
+                Mapper.CreateMap<AuthorViewModel, Author>();
+                db.Entry(Mapper.Map<AuthorViewModel, Author>(author)).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(author);
+            return View("Form",author);
         }
 
         // GET: Authors/Delete/5
@@ -125,7 +124,9 @@ namespace DemoKnockout.Controllers
             {
                 return HttpNotFound();
             }
-            return View(author);
+            Mapper.CreateMap<Author, AuthorViewModel>();
+           
+            return View(Mapper.Map<Author, AuthorViewModel>(author));
         }
 
         // POST: Authors/Delete/5
